@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7xulcvavdwjv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pcolr"]
+size = Vector2(32, 32)
+
+[node name="Apple" type="StaticBody2D"]
+collision_mask = 0
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(16, 16)
+scale = Vector2(0.9, 0.9)
+shape = SubResource("RectangleShape2D_pcolr")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 31.0
+offset_bottom = 31.0
+color = Color(0.0229099, 0.683474, 0.371867, 1)
