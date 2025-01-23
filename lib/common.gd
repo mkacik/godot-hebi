@@ -5,7 +5,7 @@ extends Node
 # segments moving every tick will collide with it.
 # MINIMAL_MOVE_INTERVAL ~= CELL_SIZE / MOVE_ANIMATION_SPEED + 0.01
 const MOVE_ANIMATION_SPEED: int = 200
-const CELL_SIZE: int = 32
+const CELL_SIZE: int = 48
 const MOVE_INTERVAL: float = 0.4
 
 # Default clamp implementation requires that first argument passed contains

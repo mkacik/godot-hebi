@@ -19,7 +19,6 @@ apple_scene = ExtResource("3_6tv26")
 [node name="TailEnd" parent="." instance=ExtResource("5_dmfuh")]
 
 [node name="Apple" parent="." instance=ExtResource("3_6tv26")]
-visible = true
 
 [node name="Player" parent="." instance=ExtResource("3_rgire")]
 
