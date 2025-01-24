@@ -1,24 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7xulcvavdwjv"]
+[gd_scene load_steps=4 format=3 uid="uid://b7xulcvavdwjv"]
+
+[ext_resource type="Script" path="res://scenes/apple.gd" id="1_2f3v6"]
+[ext_resource type="LabelSettings" uid="uid://bsaw0b3v2jtn5" path="res://small_text.tres" id="2_bdp3x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pcolr"]
 size = Vector2(48, 48)
 
-[sub_resource type="LabelSettings" id="LabelSettings_0i31l"]
-font_size = 44
-shadow_size = 0
-
 [node name="Apple" type="StaticBody2D"]
 collision_mask = 0
+script = ExtResource("1_2f3v6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(24, 24)
 shape = SubResource("RectangleShape2D_pcolr")
 
-[node name="Label" type="Label" parent="."]
+[node name="Text" type="Label" parent="."]
 offset_top = -8.0
 offset_right = 48.0
 offset_bottom = 53.0
 text = "あ"
-label_settings = SubResource("LabelSettings_0i31l")
+label_settings = ExtResource("2_bdp3x")
 horizontal_alignment = 1
 vertical_alignment = 1

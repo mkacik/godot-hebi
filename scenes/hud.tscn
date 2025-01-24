@@ -1,13 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://ccmivnmm1cxdu"]
+[gd_scene load_steps=4 format=3 uid="uid://ccmivnmm1cxdu"]
 
 [ext_resource type="Script" path="res://scenes/hud.gd" id="1_dcsrn"]
 [ext_resource type="Theme" uid="uid://ohbxnwpsmf82" path="res://theme.tres" id="1_r2ti2"]
+[ext_resource type="LabelSettings" uid="uid://bsyxchkl3k7rc" path="res://hud_small.tres" id="3_hhut5"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_dcsrn")
 
 [node name="StartButton" type="Button" parent="."]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -23,7 +23,6 @@ theme = ExtResource("1_r2ti2")
 text = "START"
 
 [node name="GameOverMessage" type="Label" parent="."]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -34,6 +33,66 @@ offset_bottom = 148.0
 grow_horizontal = 2
 theme = ExtResource("1_r2ti2")
 text = "GAME OVER"
+
+[node name="Hint" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -81.5
+offset_right = 81.5
+offset_bottom = 47.0
+grow_horizontal = 2
+pivot_offset = Vector2(200.5, 256)
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "kana:"
+label_settings = ExtResource("3_hhut5")
+vertical_alignment = 1
+
+[node name="Score" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1104.0
+offset_right = -904.0
+offset_bottom = 47.0
+grow_horizontal = 0
+pivot_offset = Vector2(128, 125)
+text = "score: "
+label_settings = ExtResource("3_hhut5")
+
+[node name="FinalScore" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -264.0
+offset_top = -135.0
+offset_right = 264.0
+offset_bottom = -87.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(392, 92.5)
+theme = ExtResource("1_r2ti2")
+text = "0"
+horizontal_alignment = 1
+metadata/_edit_group_ = true
+
+[node name="FinalScoreLabel" type="Label" parent="FinalScore"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -114.0
+offset_top = -52.0
+offset_right = 174.0
+offset_bottom = -4.0
+grow_horizontal = 2
+scale = Vector2(0.8, 0.8)
+text = "score:"
 
 [connection signal="start_game" from="." to="." method="_on_start_game"]
 [connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]

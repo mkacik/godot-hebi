@@ -1,9 +1,12 @@
 extends Node2D
 
 const Common = preload("res://lib/common.gd")
+const Letters = preload("res://lib/letters.gd")
+
 const CELL_SIZE: int = Common.CELL_SIZE
 
 signal game_over
+signal kana_changed(new_hint: String)
 
 @export var wall_scene: PackedScene
 @export var tail_scene: PackedScene
@@ -24,6 +27,8 @@ var tail_end_cell
 var tail_end_target_cell
 
 var tail_segments = []
+
+var decoys = []
 
 func _ready() -> void:
     $MoveTimer.wait_time = Common.MOVE_INTERVAL
@@ -64,13 +69,44 @@ func spawn_walls() -> void:
         spawn_wall(Vector2(0, y), "WallWest" + str(y))
         spawn_wall(Vector2(grid_size.x - 1, y), "WallEast" + str(y))
 
-func spawn_apple() -> void:
+func spawn_apple(text: String) -> void:
     # no need to mark previous cell free: this function is only called on start
     # and when apple is eaten. In latter case, that means snake head is now
     # occupying the position
     var cell = cells.get_random_free_cell()
     $Apple.position = cell * CELL_SIZE
+    $Apple.set_text(text)
     cells.mark_occupied(cell)
+
+func spawn_decoy(text: String) -> void:
+    var cell = cells.get_random_free_cell()
+    var decoy = apple_scene.instantiate()
+    decoy.name = "Decoy" + str(decoys.size())
+    decoy.position = cell * CELL_SIZE
+    decoy.set_text(text)
+    call_deferred("add_child", decoy)
+    decoys.append(decoy)
+    cells.mark_occupied(cell)
+
+func spawn_apples() -> void:
+    # clear previous decoys first
+    while decoys.size() > 0:
+        var decoy = decoys.pop_front()
+        var cell = decoy.position / CELL_SIZE
+        decoy.hide()
+        decoy.queue_free()
+        cells.mark_free(cell)
+
+    var random_kana = Letters.pick_random()
+    var english = random_kana["english"]
+    var kana = random_kana["kana"]
+
+    kana_changed.emit(english)
+    spawn_apple(kana)
+    var new_decoys = Letters.get_two_others(kana)
+
+    for decoy in new_decoys:
+        spawn_decoy(decoy)
 
 func spawn_tail_segment(cell: Vector2) -> void:
     var tail_segment = tail_scene.instantiate()
@@ -117,7 +153,7 @@ func start() -> void:
     cells.initialize()
     spawn_snake()
     spawn_walls()
-    spawn_apple()
+    spawn_apples()
     show()
     $MoveTimer.start()
 
@@ -167,7 +203,7 @@ func _on_tail_end_finished_moving() -> void:
 
 func _on_player_apple_eaten() -> void:
     spawn_tail_segment(tail_end_target_cell)
-    spawn_apple()
+    spawn_apples()
 
 func _on_player_wall_hit() -> void:
     game_over.emit()

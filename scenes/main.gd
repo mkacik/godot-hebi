@@ -12,3 +12,8 @@ func new_game():
 func game_over():
     $Level.stop()
     $HUD.show_game_over_message()
+
+func _on_level_kana_changed(new_hint: String) -> void:
+    $HUD.set_hint(new_hint)
+    # Kana only changes if player picked correct character
+    $HUD.bump_score()
