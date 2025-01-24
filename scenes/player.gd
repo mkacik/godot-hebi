@@ -21,7 +21,7 @@ func _process(delta: float):
         return
 
     var velocity = direction * Common.MOVE_ANIMATION_SPEED
-    var position_delta = ceil(velocity * delta)
+    var position_delta = velocity * delta
     position = Common.clamped(position + position_delta, position, target_position)
     if position == target_position:
         finished_moving.emit()
