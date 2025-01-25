@@ -7,6 +7,7 @@ const CELL_SIZE: int = Common.CELL_SIZE
 
 signal game_over
 signal kana_changed(new_hint: String)
+signal pause_toggled(is_paused: bool)
 
 @export var wall_scene: PackedScene
 @export var tail_scene: PackedScene
@@ -29,6 +30,15 @@ var tail_end_target_cell
 var tail_segments = []
 
 var decoys = []
+
+func _input(event):
+    if event.is_action_pressed("ui_cancel"):
+        if $MoveTimer.is_stopped():
+            pause_toggled.emit(false)
+            $MoveTimer.start()
+        else:
+            $MoveTimer.stop()
+            pause_toggled.emit(true)
 
 func _ready() -> void:
     $MoveTimer.wait_time = Common.MOVE_INTERVAL

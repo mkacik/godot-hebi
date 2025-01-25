@@ -39,3 +39,9 @@ func _on_start_button_pressed() -> void:
     $Hint.show()
     $Score.show()
     start_game.emit()
+
+func pause(pause: bool) -> void:
+    if pause:
+        $PauseMessage.show()
+    else:
+        $PauseMessage.hide()

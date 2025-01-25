@@ -94,5 +94,21 @@ grow_horizontal = 2
 scale = Vector2(0.8, 0.8)
 text = "score:"
 
+[node name="PauseMessage" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_r2ti2")
+text = "paused"
+
 [connection signal="start_game" from="." to="." method="_on_start_game"]
 [connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]

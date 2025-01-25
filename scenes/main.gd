@@ -17,3 +17,6 @@ func _on_level_kana_changed(new_hint: String) -> void:
     $HUD.set_hint(new_hint)
     # Kana only changes if player picked correct character
     $HUD.bump_score()
+
+func _on_level_pause_toggled(is_paused: bool) -> void:
+    $HUD.pause(is_paused)
