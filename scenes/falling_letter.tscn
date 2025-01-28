@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cd0igrcudstx8"]
+
+[ext_resource type="Script" path="res://scenes/falling_letter.gd" id="1_s0y1g"]
+[ext_resource type="LabelSettings" uid="uid://d1arts5cphwg6" path="res://themes/falling_kana_label_settings.tres" id="2_80w1t"]
+
+[node name="FallingLetter" type="RigidBody2D" groups=["falling_letters"]]
+visible = false
+gravity_scale = 0.15
+script = ExtResource("1_s0y1g")
+
+[node name="Text" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.0
+offset_right = 22.0
+offset_bottom = 65.0
+grow_horizontal = 2
+text = "な"
+label_settings = ExtResource("2_80w1t")
+horizontal_alignment = 1
+vertical_alignment = 1

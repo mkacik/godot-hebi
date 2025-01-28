@@ -3,6 +3,9 @@ extends CanvasLayer
 signal start_game
 
 func _ready() -> void:
+    $MenuBackground.show()
+    $MenuBackground.start()
+
     $GameOverMessage.hide()
     $StartButton.show()
 
@@ -17,6 +20,9 @@ func set_score(score: int) -> void:
 
 func show_game_over_message(final_score: int):
     $ScoreBar.hide()
+
+    $MenuBackground.show()
+    $MenuBackground.start()
 
     $GameOverMessage.show()
     $StartButton.text = "RESTART"
@@ -36,6 +42,9 @@ func _on_start_button_pressed() -> void:
     $GameOverMessage.hide()
     $FinalScore.hide()
     $StartButton.hide()
+
+    $MenuBackground.hide()
+    $MenuBackground.stop()
 
     $ScoreBar.show()
     start_game.emit()

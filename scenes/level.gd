@@ -5,8 +5,8 @@ const Letters = preload("res://lib/letters.gd")
 const CELL_SIZE: int = 48
 const MOVE_INTERVAL: float = 0.3
 
-signal game_over(final_score: int)
 signal kana_changed(new_hint: String, score: int)
+signal game_over(final_score: int)
 signal game_paused
 signal game_unpaused
 
@@ -136,8 +136,8 @@ func spawn_snake() -> void:
     spawn_player(cell)
 
     var tail_segment_relative_positions = [Vector2.LEFT, Vector2.LEFT, Vector2.DOWN, Vector2.DOWN, Vector2.DOWN]
-    for direction in tail_segment_relative_positions:
-        cell += direction
+    for tail_direction in tail_segment_relative_positions:
+        cell += tail_direction
         spawn_tail_segment(cell)
 
     # Pick staring direction. Can go in one of 3 directions

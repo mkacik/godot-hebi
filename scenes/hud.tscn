@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ccmivnmm1cxdu"]
+[gd_scene load_steps=6 format=3 uid="uid://ccmivnmm1cxdu"]
 
 [ext_resource type="Script" path="res://scenes/hud.gd" id="1_dcsrn"]
 [ext_resource type="Theme" uid="uid://k4qorb53tshu" path="res://themes/hud_theme.tres" id="2_jeouc"]
+[ext_resource type="PackedScene" uid="uid://2vnxll4u2186" path="res://scenes/menu_background.tscn" id="2_xdr7c"]
 [ext_resource type="LabelSettings" uid="uid://dnflj2vlad0nx" path="res://themes/score_bar_label_settings.tres" id="3_208to"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rmyp6"]
@@ -9,6 +10,8 @@ font_size = 80
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_dcsrn")
+
+[node name="MenuBackground" parent="." instance=ExtResource("2_xdr7c")]
 
 [node name="StartButton" type="Button" parent="."]
 anchors_preset = 8

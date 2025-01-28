@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://2vnxll4u2186"]
+
+[ext_resource type="Script" path="res://scenes/menu_background.gd" id="1_85luk"]
+[ext_resource type="PackedScene" uid="uid://cd0igrcudstx8" path="res://scenes/falling_letter.tscn" id="2_nda2w"]
+
+[node name="MenuBackground" type="Node2D"]
+process_mode = 1
+script = ExtResource("1_85luk")
+falling_letter = ExtResource("2_nda2w")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 736.0
+color = Color(0.145098, 0.145098, 0.145098, 1)
+
+[node name="LetterSpawnTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[connection signal="timeout" from="LetterSpawnTimer" to="." method="_on_letter_spawn_timer_timeout"]
