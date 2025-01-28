@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7xulcvavdwjv"]
 
 [ext_resource type="Script" path="res://scenes/apple.gd" id="1_2f3v6"]
-[ext_resource type="LabelSettings" uid="uid://bsaw0b3v2jtn5" path="res://small_text.tres" id="2_bdp3x"]
+[ext_resource type="LabelSettings" uid="uid://vy3nfsebrkio" path="res://themes/kana_label_settings.tres" id="2_m0wd1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pcolr"]
 size = Vector2(48, 48)
@@ -15,10 +15,10 @@ position = Vector2(24, 24)
 shape = SubResource("RectangleShape2D_pcolr")
 
 [node name="Text" type="Label" parent="."]
-offset_top = -8.0
+offset_top = -11.0
 offset_right = 48.0
-offset_bottom = 53.0
+offset_bottom = 54.0
 text = "あ"
-label_settings = ExtResource("2_bdp3x")
+label_settings = ExtResource("2_m0wd1")
 horizontal_alignment = 1
 vertical_alignment = 1

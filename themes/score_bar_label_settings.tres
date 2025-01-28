@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://dnflj2vlad0nx"]
+
+[ext_resource type="FontFile" uid="uid://db2tj13h04cu2" path="res://fonts/NotoSans-Medium.ttf" id="1_u8rgo"]
+
+[resource]
+font = ExtResource("1_u8rgo")
+font_size = 36
+font_color = Color(0, 0, 0, 1)

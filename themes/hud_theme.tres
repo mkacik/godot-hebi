@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://k4qorb53tshu"]
+
+[ext_resource type="FontFile" uid="uid://cssp0k7ip8ase" path="res://fonts/NotoSans-Bold.ttf" id="1_gwifo"]
+
+[resource]
+default_font = ExtResource("1_gwifo")
+default_font_size = 55

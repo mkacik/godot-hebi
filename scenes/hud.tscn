@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://ccmivnmm1cxdu"]
+[gd_scene load_steps=5 format=3 uid="uid://ccmivnmm1cxdu"]
 
 [ext_resource type="Script" path="res://scenes/hud.gd" id="1_dcsrn"]
-[ext_resource type="Theme" uid="uid://ohbxnwpsmf82" path="res://theme.tres" id="1_r2ti2"]
-[ext_resource type="LabelSettings" uid="uid://bsyxchkl3k7rc" path="res://hud_small.tres" id="3_hhut5"]
+[ext_resource type="Theme" uid="uid://k4qorb53tshu" path="res://themes/hud_theme.tres" id="2_jeouc"]
+[ext_resource type="LabelSettings" uid="uid://dnflj2vlad0nx" path="res://themes/score_bar_label_settings.tres" id="3_208to"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rmyp6"]
+font_size = 80
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_dcsrn")
@@ -13,13 +16,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -140.0
-offset_top = -41.5
-offset_right = 140.0
-offset_bottom = 41.5
+offset_left = -150.0
+offset_top = -42.0
+offset_right = 150.0
+offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_r2ti2")
+theme = ExtResource("2_jeouc")
 text = "START"
 
 [node name="GameOverMessage" type="Label" parent="."]
@@ -31,36 +34,11 @@ offset_top = 100.0
 offset_right = 216.0
 offset_bottom = 148.0
 grow_horizontal = 2
-theme = ExtResource("1_r2ti2")
+theme = ExtResource("2_jeouc")
 text = "GAME OVER"
-
-[node name="Hint" type="Label" parent="."]
-visible = false
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -81.5
-offset_right = 81.5
-offset_bottom = 47.0
-grow_horizontal = 2
-pivot_offset = Vector2(200.5, 256)
-size_flags_horizontal = 0
-size_flags_vertical = 8
-text = "kana:"
-label_settings = ExtResource("3_hhut5")
+label_settings = SubResource("LabelSettings_rmyp6")
+horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Score" type="Label" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -1104.0
-offset_right = -904.0
-offset_bottom = 47.0
-grow_horizontal = 0
-pivot_offset = Vector2(128, 125)
-text = "score: "
-label_settings = ExtResource("3_hhut5")
 
 [node name="FinalScore" type="Label" parent="."]
 visible = false
@@ -70,29 +48,51 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -264.0
-offset_top = -135.0
+offset_top = -171.0
 offset_right = 264.0
-offset_bottom = -87.0
+offset_bottom = -66.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(392, 92.5)
-theme = ExtResource("1_r2ti2")
-text = "0"
+theme = ExtResource("2_jeouc")
+text = "score: 0"
 horizontal_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="FinalScoreLabel" type="Label" parent="FinalScore"]
+[node name="ScoreBar" type="ColorRect" parent="."]
+visible = false
+offset_right = 1152.0
+offset_bottom = 64.0
+
+[node name="Score" type="Label" parent="ScoreBar"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1104.0
+offset_right = -808.0
+offset_bottom = 64.0
+grow_horizontal = 0
+pivot_offset = Vector2(128, 125)
+text = "score: "
+label_settings = ExtResource("3_208to")
+vertical_alignment = 1
+
+[node name="Hint" type="Label" parent="ScoreBar"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -114.0
-offset_top = -52.0
-offset_right = 174.0
-offset_bottom = -4.0
+offset_left = -88.0
+offset_right = 88.0
+offset_bottom = 64.0
 grow_horizontal = 2
-scale = Vector2(0.8, 0.8)
-text = "score:"
+pivot_offset = Vector2(200.5, 256)
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "kana:"
+label_settings = ExtResource("3_208to")
+vertical_alignment = 1
 
 [node name="PauseMessage" type="Label" parent="."]
 visible = false
@@ -101,14 +101,23 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+offset_left = -99.5
+offset_top = -38.0
+offset_right = 99.5
+offset_bottom = 38.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_r2ti2")
+size_flags_horizontal = 4
+theme = ExtResource("2_jeouc")
 text = "paused"
+
+[node name="SheerOverlay" type="ColorRect" parent="PauseMessage"]
+layout_mode = 0
+offset_left = -476.5
+offset_top = -330.0
+offset_right = 675.5
+offset_bottom = 406.0
+color = Color(1, 1, 1, 0.392157)
 
 [connection signal="start_game" from="." to="." method="_on_start_game"]
 [connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]

@@ -1,7 +1,0 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bsaw0b3v2jtn5"]
-
-[ext_resource type="FontFile" uid="uid://bjr6o1u45dwqi" path="res://fonts/NotoSansJP.ttf" id="1_ix08q"]
-
-[resource]
-font = ExtResource("1_ix08q")
-font_size = 44

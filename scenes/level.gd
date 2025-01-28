@@ -1,13 +1,14 @@
 extends Node2D
 
-const Common = preload("res://lib/common.gd")
 const Letters = preload("res://lib/letters.gd")
 
-const CELL_SIZE: int = Common.CELL_SIZE
+const CELL_SIZE: int = 48
+const MOVE_INTERVAL: float = 0.3
 
-signal game_over
-signal kana_changed(new_hint: String)
-signal pause_toggled(is_paused: bool)
+signal game_over(final_score: int)
+signal kana_changed(new_hint: String, score: int)
+signal game_paused
+signal game_unpaused
 
 @export var wall_scene: PackedScene
 @export var tail_scene: PackedScene
@@ -15,52 +16,50 @@ signal pause_toggled(is_paused: bool)
 
 var grid_size: Vector2
 var cells: Cells
+var score: int
 
-# All relevant positions that need tracking, all expressed as grid cell.
-# Storing them in Level class allows for making moving child nodes cell-size
-# agnostic
-var next_direction
+var next_direction: Vector2
+var player_cell: Vector2
 
-var player_cell
-var player_target_cell
+var tail_segments: Array = []
+var decoys: Array = []
 
-var tail_end_cell
-var tail_end_target_cell
-
-var tail_segments = []
-
-var decoys = []
-
-func _input(event):
-    if event.is_action_pressed("ui_cancel"):
-        if $MoveTimer.is_stopped():
-            pause_toggled.emit(false)
-            $MoveTimer.start()
-        else:
-            $MoveTimer.stop()
-            pause_toggled.emit(true)
+var is_paused: bool
 
 func _ready() -> void:
-    $MoveTimer.wait_time = Common.MOVE_INTERVAL
-    # print("Min interval: ", 1.0 * Common.CELL_SIZE / Common.MOVE_ANIMATION_SPEED)
-    # print("Current move interval: ", $MoveTimer.wait_time)
-
-    grid_size = get_viewport_rect().size / CELL_SIZE
+    $MoveTimer.wait_time = MOVE_INTERVAL
+    grid_size = $Background.size / CELL_SIZE
     cells = Cells.new(grid_size)
 
 func _process(_delta: float) -> void:
+    if is_paused:
+        return
+
     if Input.is_action_pressed("move_right"):
-        if $Player.can_move(Vector2.RIGHT):
+        if can_move(Vector2.RIGHT):
             next_direction = Vector2.RIGHT
     elif Input.is_action_pressed("move_left"):
-        if $Player.can_move(Vector2.LEFT):
+        if can_move(Vector2.LEFT):
             next_direction = Vector2.LEFT
     elif Input.is_action_pressed("move_down"):
-        if $Player.can_move(Vector2.DOWN):
+        if can_move(Vector2.DOWN):
             next_direction = Vector2.DOWN
     elif Input.is_action_pressed("move_up"):
-        if $Player.can_move(Vector2.UP):
+        if can_move(Vector2.UP):
             next_direction = Vector2.UP
+
+func _input(event):
+    if !visible:
+        return
+
+    if event.is_action_pressed("ui_cancel"):
+        if is_paused:
+            unpause()
+        else:
+            pause()
+
+func can_move(maybe_next_direction: Vector2) -> bool:
+    return (next_direction + maybe_next_direction) != Vector2.ZERO
 
 func spawn_wall(cell: Vector2, new_name: String) -> void:
     var wall = wall_scene.instantiate()
@@ -94,7 +93,7 @@ func spawn_decoy(text: String) -> void:
     decoy.name = "Decoy" + str(decoys.size())
     decoy.position = cell * CELL_SIZE
     decoy.set_text(text)
-    call_deferred("add_child", decoy)
+    $Background.call_deferred("add_sibling", decoy)
     decoys.append(decoy)
     cells.mark_occupied(cell)
 
@@ -111,7 +110,7 @@ func spawn_apples() -> void:
     var english = random_kana["english"]
     var kana = random_kana["kana"]
 
-    kana_changed.emit(english)
+    kana_changed.emit(english, score)
     spawn_apple(kana)
     var new_decoys = Letters.get_two_others(kana)
 
@@ -123,25 +122,13 @@ func spawn_tail_segment(cell: Vector2) -> void:
     tail_segment.name = "TailSegment" + str(tail_segments.size())
     tail_segment.position = cell * CELL_SIZE
     tail_segments.push_back(tail_segment)
-
-    # This will ensure that new tail segments will be rendered every frame
-    # before the Apple, Player and dynamically added walls.
     call_deferred("add_child", tail_segment)
     cells.mark_occupied(cell)
 
 func spawn_player(cell: Vector2) -> void:
     player_cell = cell
-    player_target_cell = cell
     $Player.start(cell * CELL_SIZE)
     cells.mark_occupied(cell)
-
-func spawn_tail_end(cell: Vector2) -> void:
-    # Tail end is a fake segment that overlaps the last tail segment (when snake
-    # is not moving, it overlaps 100%). It's purpose is to make animation smooth
-    # at the end of tail. It's already occupied, so no need to mark it.
-    tail_end_cell = cell
-    tail_end_target_cell = cell
-    $TailEnd.start(cell * CELL_SIZE)
 
 func spawn_snake() -> void:
     var cell = Vector2(8, 5)
@@ -151,8 +138,6 @@ func spawn_snake() -> void:
     for direction in tail_segment_relative_positions:
         cell += direction
         spawn_tail_segment(cell)
-
-    spawn_tail_end(cell)
 
     # Pick staring direction. Can go in one of 3 directions
     var valid_directions = [Vector2.LEFT, Vector2.DOWN, Vector2.RIGHT, Vector2.UP]
@@ -164,59 +149,52 @@ func start() -> void:
     spawn_snake()
     spawn_walls()
     spawn_apples()
+    score = 0
     show()
     $MoveTimer.start()
 
 func stop() -> void:
-    hide()
     $MoveTimer.stop()
-    $Player.stop()
-    $TailEnd.stop()
+    hide()
+    $Player.reset()
     get_tree().call_group("walls", "queue_free")
     get_tree().call_group("tail", "queue_free")
     tail_segments.clear()
 
+func pause() -> void:
+    $MoveTimer.stop()
+    is_paused = true
+    game_paused.emit()
+
+func unpause() -> void:
+    game_unpaused.emit()
+    is_paused = false
+    $MoveTimer.start()
+
 func tick() -> void:
     # 1. Move the player.
-    player_target_cell = player_cell + next_direction
-    $Player.move(player_target_cell * CELL_SIZE)
-    cells.mark_occupied(player_target_cell)
+    var previous_player_cell = player_cell
+    player_cell = player_cell + next_direction
+    $Player.position = player_cell * CELL_SIZE
+    cells.mark_occupied(player_cell)
 
-    # 2A. Move the body: pick the last tail segment and pop it where player
-    # is moving away from. Before the move collisions need to be disabled,
-    # to not interfere with player.
+    # 2. Move the body: pick the last tail segment and mark it's position
+    # in the cell greed as free. Then put that segment right where player
+    # just was.
     var last_segment = tail_segments.pop_back()
-    last_segment.deferred_disable_collisions()
-    last_segment.set_deferred("position", player_cell * CELL_SIZE)
+    cells.mark_free(last_segment.position / CELL_SIZE)
+    last_segment.position = previous_player_cell * CELL_SIZE
     tail_segments.push_front(last_segment)
 
-    # 2B. Reenable collisions for the now second segment ,that is no longer
-    # touching the player.
-    tail_segments[1].deferred_enable_collisions()
-
-    # 3. Move the tail end towards the last tail segment until they are in the
-    # same cell. Tail segments are not moving on their own, are only moved in
-    # this function, so their positions will always be on "whole" cell.
-    tail_end_target_cell = tail_segments[-1].position / CELL_SIZE
-    $TailEnd.move(tail_end_target_cell * CELL_SIZE)
-
-func _on_player_finished_moving() -> void:
-    player_cell = player_target_cell
-
-func _on_tail_end_finished_moving() -> void:
-    tail_end_cell = tail_end_target_cell
-
-    # only if player is not moving into there in the meantime
-    # var player_target_grid_position = $Level/Player.target_position / cell_size
-    # if previous_tail_position != player_target_grid_position:
-    #    $Level.mark_grid_cell_unoccupied(previous_tail_position)
-
 func _on_player_apple_eaten() -> void:
-    spawn_tail_segment(tail_end_target_cell)
+    score += 1
+    var tail_end_cell = tail_segments[-1].position / CELL_SIZE
+    spawn_tail_segment(tail_end_cell)
     spawn_apples()
 
 func _on_player_wall_hit() -> void:
-    game_over.emit()
+    stop()
+    game_over.emit(score)
 
 func _on_move_timer_timeout() -> void:
     tick()
