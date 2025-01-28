@@ -18,6 +18,7 @@ var grid_size: Vector2
 var cells: Cells
 var score: int
 
+var direction: Vector2
 var next_direction: Vector2
 var player_cell: Vector2
 
@@ -59,7 +60,7 @@ func _input(event):
             pause()
 
 func can_move(maybe_next_direction: Vector2) -> bool:
-    return (next_direction + maybe_next_direction) != Vector2.ZERO
+    return (direction + maybe_next_direction) != Vector2.ZERO
 
 func spawn_wall(cell: Vector2, new_name: String) -> void:
     var wall = wall_scene.instantiate()
@@ -142,7 +143,8 @@ func spawn_snake() -> void:
     # Pick staring direction. Can go in one of 3 directions
     var valid_directions = [Vector2.LEFT, Vector2.DOWN, Vector2.RIGHT, Vector2.UP]
     valid_directions.erase(tail_segment_relative_positions[0])
-    next_direction = valid_directions.pick_random()
+    direction = valid_directions.pick_random()
+    next_direction = direction
 
 func start() -> void:
     cells.initialize()
@@ -173,8 +175,9 @@ func unpause() -> void:
 
 func tick() -> void:
     # 1. Move the player.
+    direction = next_direction
     var previous_player_cell = player_cell
-    player_cell = player_cell + next_direction
+    player_cell = player_cell + direction
     $Player.position = player_cell * CELL_SIZE
     cells.mark_occupied(player_cell)
 
