@@ -4,6 +4,6 @@ Small variation on top of my first godot project (https://github.com/mkacik/godo
 
 I didn't account in the code for edge cases like bad letter materializing right in front of you, or correct letter being locked in the corner by two "decoys".
 
-If you're on desktop site, game is playable here: https://mkacik.github.io/godot-snek-hiragana/. I don't know yet how to do mobile controls, so not playable on mobile, maybe one day.
+If you're on desktop site, game is playable here: https://mkacik.github.io/godot-hebi/. I don't know yet how to do mobile controls, so not playable on mobile, maybe one day.
 
 ![screenshot](screenshot.png)
